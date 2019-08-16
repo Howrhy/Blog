@@ -1,0 +1,38 @@
+server:
+  port: 8313
+  max-http-header-size: 20480
+
+spring:
+  application:
+    name: Blog 
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?serverTimezone=GMT&useSSL=false&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: root
+    
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    check-template-location: true
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/  
+
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9999/eureka/
+
+     
+mybatis:
+    #对应实体类路径
+    typeAliasesPackage: com.rhy.blog.entity
+    #对应mapper映射文件路径
+    mapperLocations: classpath*:mapper/**/*.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+security:
+  basic:
+    enabled: false

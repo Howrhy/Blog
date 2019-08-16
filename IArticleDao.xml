@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rhy.blog.dao.article.IArticleDao">
+	<resultMap id="ArticleInfo" type="com.rhy.blog.entity.article.ArticleInfo">
+		<result column="ARTICLE_ID"  jdbcType="BIGINT" property="articleId" />
+		<result column="ARTICLE_CATEGORIES" jdbcType="VARCHAR" property="articleCategories" />
+		<result column="AUTHOR_NAME" jdbcType="VARCHAR" property="authorName" />
+		<result column="ARTICLE_TITLE" jdbcType="VARCHAR" property="articleTitle" />
+		<result column="ARTICLE_CONTENT" jdbcType="VARCHAR" property="articleContent" />
+		<result column="ARTICLE_TYPE" jdbcType="VARCHAR" property="articleType" />
+		<result column="ARTICLE_URL" jdbcType="VARCHAR" property="articleUrl" />
+		<result column="ARTICLE_ABSTRACT" jdbcType="VARCHAR" property="articleAbstract" />
+		<result column="PUBLISH_DATE" jdbcType="VARCHAR" property="publishDate" />
+		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+	</resultMap>
+	<select id="countArticle" resultType="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM
+		ARTICLE_INFO
+	</select>
+
+	<select id="getLastArticle" resultType="java.lang.Long">
+		SELECT IFNULL(
+		(
+		SELECT
+		ARTICLE_ID
+		FROM ARTICLE_INFO
+		WHERE 
+	<![CDATA[ARTICLE_ID < #{articleId,jdbcType=BIGINT} ]]>
+		ORDER BY ARTICLE_ID DESC LIMIT 1
+		),0)
+	</select>
+
+	<select id="getNextArticle" resultType="java.lang.Long">
+		SELECT IFNULL(
+		(
+		SELECT
+		ARTICLE_ID
+		FROM ARTICLE_INFO
+		WHERE 
+	<![CDATA[ARTICLE_ID > #{articleId,jdbcType=BIGINT} ]]>
+		ORDER BY ARTICLE_ID ASC LIMIT 1
+		),0)
+	</select>
+
+	<delete id="deleteByArticleId">
+		DELETE
+		FROM
+		ARTICLE_INFO
+		WHERE
+		ARTICLE_ID=#{articleId,jdbcType=BIGINT}
+	</delete>
+
+
+
+	<insert id="insertArticle" parameterType="com.rhy.blog.entity.article.ArticleInfo">
+		INSERT
+		INTO
+		ARTICLE_INFO
+		(
+		ARTICLE_ID,
+		AUTHOR_NAME,
+		ARTICLE_TITLE,
+		ARTICLE_CONTENT,
+		ARTICLE_TYPE,
+		PUBLISH_DATE,
+		UPDATE_DATE,
+		ARTICLE_URL,
+		ARTICLE_ABSTRACT,
+		ARTICLE_CATEGORIES
+		)
+		VALUES
+		(
+		#{articleInfo.articleId,jdbcType=BIGINT},
+		#{articleInfo.authorName,jdbcType=VARCHAR},
+		#{articleInfo.articleTitle,jdbcType=VARCHAR},
+		#{articleInfo.articleContent,jdbcType=VARCHAR},
+		#{articleInfo.articleType,jdbcType=VARCHAR},
+		#{articleInfo.publishDate,jdbcType=VARCHAR},
+		#{articleInfo.updateDate,jdbcType=VARCHAR},
+		#{articleInfo.articleUrl,jdbcType=VARCHAR},
+		#{articleInfo.articleAbstract,jdbcType=VARCHAR},	
+		#{articleInfo.articleCategories,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateArticleUrl">
+		UPDATE
+		ARTICLE_INFO
+		SET
+		ARTICLE_URL=#{url,jdbcType=VARCHAR}
+		WHERE
+		ARTICLE_ID=#{articleId,jdbcType=BIGINT}
+	</update>
+
+	<update id="updateArticleById" parameterType="com.rhy.blog.entity.article.ArticleInfo">
+		UPDATE
+		ARTICLE_INFO
+		SET
+		AUTHOR_NAME=#{articleInfo.authorName,jdbcType=VARCHAR},
+		ARTICLE_TITLE=#{articleInfo.articleTitle,jdbcType=VARCHAR},
+		ARTICLE_CONTENT=#{articleInfo.articleContent,jdbcType=VARCHAR},
+		ARTICLE_TYPE=#{articleInfo.articleType,jdbcType=VARCHAR},
+		ARTICLE_ABSTRACT=#{articleInfo.articleAbstract,jdbcType=VARCHAR},
+		UPDATE_DATE=#{articleInfo.updateDate,jdbcType=VARCHAR}
+		WHERE
+		ARTICLE_ID=#{articleInfo.articleId,jdbcType=BIGINT}
+	</update>
+
+	<select id="findArticleById" resultMap="ArticleInfo">
+		SELECT
+		*
+		FROM
+		ARTICLE_INFO
+		WHERE
+		ARTICLE_ID=#{articleId,jdbcType=BIGINT}
+	</select>
+
+	<update id="updateLikeByArticleId">
+		UPDATE
+		ARTICLE_INFO
+		SET
+		ARTICLE_LIKE=ARTILE_LIKE+1
+		WHERE
+		ARTICLE_ID=#{articleId,jdbcType=BIGINT}
+	</update>
+
+	<select id="findLikesByArticleId" resultType="java.lang.Long">
+		SELECT
+		ARTICLE_LIKE
+		FROM
+		ARTICLE_INFO
+		WHERE
+		ARTICLE_ID=#{articleId,jdbcType=BIGINT}
+	</select>
+
+	<select id="findAllArticles" resultType="com.rhy.blog.entity.article.ArticleInfo">
+		SELECT
+		*
+		FROM
+		ARTICLE_INFO
+	</select>
+	
+	<select id="findArticleByCategory" resultType="com.rhy.blog.entity.article.ArticleInfo">
+		SELECT
+		*
+		FROM
+		ARTICLE_INFO
+		WHERE
+		ARTICLE_CATEGORIES=#{category,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="countArticleCategoryByCategory" resultType="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM
+		ARTICLE_INFO
+		WHERE
+		ARTICLE_CATEGORIES=#{category,jdbcType=VARCHAR}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rhy.blog.dao.user.IUserDao">
+	<resultMap id="UserInfo" type="com.rhy.blog.entity.user.UserInfo">
+		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+		<result column="USER_GENDER" jdbcType="VARCHAR" property="userGender" />
+		<result column="USER_EMAIL" jdbcType="VARCHAR" property="userEmail" />
+		<result column="USER_PHONE" jdbcType="VARCHAR" property="userPhone" />
+		<result column="USER_PWD" jdbcType="VARCHAR" property="userPwd" />
+		<result column="RECENTLY_LANDED" jdbcType="VARCHAR" property="recentlyLanded" />
+	</resultMap>
+
+	<insert id="insertUserInfo" parameterType="com.rhy.blog.entity.user.UserInfo">
+		INSERT INTO
+		USER_INFO
+		(
+		USER_NAME,
+		USER_GENDER,
+		USER_EMAIL,
+		USER_PHONE,
+		USER_PWD,
+		RECENTLY_LANDED
+		)
+		VALUES
+		(
+		#{userInfo.userName,jdbcType=VARCHAR},
+		#{userInfo.userGender,jdbcType=CHAR},
+		#{userInfo.userEmail,jdbcType=VARCHAR},
+		#{userInfo.userPhone,jdbcType=VARCHAR},
+		#{userInfo.userPwd,jdbcType=VARCHAR},
+		#{userInfo.recentlyLanded,jdbcType=VARCHAR}
+		)
+	</insert>
+
+
+	<select id="findUser" parameterType="com.rhy.blog.entity.user.UserInfo"
+		resultMap="UserInfo">
+		SELECT
+		*
+		FROM USER_INFO
+		WHERE
+		USER_NAME=#{userName,jdbcType=VARCHAR}
+	</select>
+
+	<select id="countUserNum" resultType="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM USER_INFO
+	</select>
+
+	<update id="updateRecentlyLanded">
+		UPDATE
+		USER_INFO
+		<set>
+			Recently_Landed=#{recentlyLanded,jdbcType=VARCHAR},
+		</set>
+		<where>
+			USER_NAME = #{userName,jdbcType=VARCHAR}
+		</where>
+	</update>
+
+	<select id="findRole" parameterType="java.lang.String"
+		resultType="com.rhy.blog.entity.user.RoleInfo">
+		SELECT
+		USER_ROLE.ROLE_ID,
+		ROLE_INFO.ROLE_NAME
+		FROM USER_ROLE
+		RIGHT JOIN
+		ROLE_INFO
+		ON
+		USER_ROLE.ROLE_ID=ROLE_INFO.ROLE_ID
+		WHERE
+		USER_NAME = #{userName,jdbcType=VARCHAR}
+	</select>
+</mapper>
